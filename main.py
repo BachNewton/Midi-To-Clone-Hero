@@ -99,6 +99,8 @@ def create_audio_from_midi(mid_file_path, output_folder):
         FLUID_SYNTHESIZER.midi_to_audio(mid_file_path, file_name)
     except FileNotFoundError:
         print('ERROR:\n\tThere was a problem converting midi to audio.\n\tYou must have FluidSynth installed.')
+        # muse_score_path = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
+        # os.system(muse_score_path + ' -o "' + file_name + '" "' + mid_file_path + '"')
 
 
 if __name__ == '__main__':
