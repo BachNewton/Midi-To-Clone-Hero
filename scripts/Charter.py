@@ -40,7 +40,7 @@ class Charter:
         header += '[Song]\n'
         header += '{\n'
         header += 'Name = "' + name + '"\n'
-        header += 'Charter = "Midi to Clone Hero Script"\n'
+        header += 'Charter = "Kyle Hutchinson"\n'
         header += 'Offset = 0\n'
         header += 'Resolution = 192\n'
         header += 'Player2 = bass\n'
