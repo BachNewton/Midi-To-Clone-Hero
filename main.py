@@ -23,9 +23,8 @@ def main():
         if file_name.endswith('.mid'):
             events = get_events(input_folder, file_name)
             song_name = get_song_name(file_name)
-            FLUID_SYNTHESIZER.midi_to_audio(input_folder + file_name, song_name + '.wav')
             output = CHARTER.get_output(song_name, events)
-            write_output_to_file(song_name, output)
+            create_output(input_folder + file_name, song_name, output)
 
 
 def get_song_name(file_name):
@@ -69,22 +68,34 @@ def get_time_scale(elements):
     return int(elements[5]) / 192
 
 
-def write_output_to_file(song_name, output):
+def create_folder(folder_name):
+    if not os.path.exists(folder_name):
+        os.mkdir(folder_name)
+
+
+def create_output(mid_file_path, song_name, output):
     output_folder = 'output/'
+    create_folder(output_folder)
+    output_folder += song_name + '/'
+    create_folder(output_folder)
 
-    if not os.path.exists(output_folder):
-        os.mkdir(output_folder)
+    write_output_to_file(output_folder, output)
+    create_audio_from_midi(mid_file_path, output_folder)
 
-    folder_name = song_name + '/'
 
-    if not os.path.exists(output_folder + folder_name):
-        os.mkdir(output_folder + folder_name)
+def write_output_to_file(output_folder, output):
+    file_name = output_folder + 'notes.chart'
+    print('Writing chart output to file:\n\t', file_name)
 
-    path = output_folder + folder_name + 'notes.chart'
-    print('Writing chart output to file:\n\t', path)
-
-    with open(path, 'w') as f:
+    with open(file_name, 'w') as f:
         f.write(output)
+
+
+def create_audio_from_midi(mid_file_path, output_folder):
+    file_name = output_folder + 'song.wav'
+    print('Creating audio file from midi:\n\t', file_name)
+
+    FLUID_SYNTHESIZER.midi_to_audio(mid_file_path, file_name)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,8 @@
 
 ### Requirements
 - Python 3.6
-- pip py_midicsv
+- pip py-midicsv
+- pip midi2audio
 
 ### How to Use
 1. Put midi files into the "input" folder
