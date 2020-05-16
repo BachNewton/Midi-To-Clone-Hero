@@ -1,19 +1,20 @@
 import py_midicsv
 import os
-from TempoEvent import TempoEvent
-from NoteEvent import NoteEvent
-from Events import Events
-from Charter import Charter
+from scripts.TempoEvent import TempoEvent
+from scripts.NoteEvent import NoteEvent
+from scripts.Events import Events
+from scripts.Charter import Charter
 
 CHARTER = Charter()
 
 
 def main():
-    print('Finding midi files in this folder')
+    input_folder = 'input/'
+    print('Finding midi files inside:', input_folder)
 
-    for file_name in os.listdir('./'):
+    for file_name in os.listdir(input_folder):
         if file_name.endswith('.mid'):
-            events = get_events(file_name)
+            events = get_events(input_folder, file_name)
             song_name = get_song_name(file_name)
             output = CHARTER.get_output(song_name, events)
             write_output_to_file(song_name, output)
@@ -23,10 +24,10 @@ def get_song_name(file_name):
     return file_name[:-4]
 
 
-def get_events(file_name):
+def get_events(input_folder, file_name):
     print('Getting events from midi file:', file_name)
 
-    midi_lines = py_midicsv.midi_to_csv(file_name)
+    midi_lines = py_midicsv.midi_to_csv(input_folder + file_name)
 
     notes_events = []
     tempo_events = []
@@ -61,9 +62,10 @@ def get_time_scale(elements):
 
 
 def write_output_to_file(song_name, output):
-    print('Writing chart output to file')
+    file_name = 'output/' + song_name + '.chart'
+    print('Writing chart output to file:', file_name)
 
-    with open(song_name + '.chart', 'w') as f:
+    with open(file_name, 'w') as f:
         f.write(output)
 
 
