@@ -1,131 +1,78 @@
 import py_midicsv
+import os
+from TempoEvent import TempoEvent
+from NoteEvent import NoteEvent
+from Events import Events
+from Charter import Charter
+
+CHARTER = Charter()
 
 
 def main():
-    events = py_midicsv.midi_to_csv("input.mid")
+    print('Finding midi files in this folder')
 
-    notes = []
-    temp_changes = []
-
-    for event in events:
-        parts = event.split(', ')
-
-        if parts[2] == 'Tempo':
-            temp_changes.append({
-                'time': parts[1],
-                'speed': parts[3][:len(parts[2]) - 1]
-            })
-        elif parts[2] == 'Note_on_c' and parts[5] != '0\n':
-            notes.append({
-                'time': parts[1],
-                'note': parts[4],
-            })
-
-    create_chart(temp_changes, notes)
+    for file_name in os.listdir('./'):
+        if file_name.endswith('.mid'):
+            events = get_events(file_name)
+            song_name = get_song_name(file_name)
+            output = get_chart_output(song_name, events)
+            write_output_to_file(song_name, output)
 
 
-def create_chart(temp_changes, notes):
-    a = """[Song]
-{
-  Name = "Midi to Chart Song"
-  Offset = 0
-  Resolution = 192
-  Player2 = bass
-  Difficulty = 0
-  PreviewStart = 0
-  PreviewEnd = 0
-  Genre = "rock"
-  MediaType = "cd"
-}
-[SyncTrack]
-{
-  0 = TS 4
-"""
-    b = """}
-[Events]
-{
-}
-"""
+def get_song_name(file_name):
+    return file_name[:-4]
+
+
+def get_events(file_name):
+    print('Getting events from midi file:', file_name)
+
+    midi_lines = py_midicsv.midi_to_csv(file_name)
+
+    notes_events = []
+    tempo_events = []
+
+    for midi_line in midi_lines:
+        elements = midi_line.split(', ')
+        elements[-1] = elements[-1].rstrip() # Removes trailing new line on last element
+
+        element_type = elements[2]
+
+        if element_type == 'Tempo':
+            tempo_events.append(get_tempo_event(elements))
+        elif element_type == 'Note_on_c' and elements[5] != '0': # Only note 'ON' events
+             notes_events.append(get_note_event(elements))
+
+    return Events(tempo_events, notes_events)
+
+
+def get_tempo_event(elements):
+    return TempoEvent(elements[1], elements[3])
+
+
+def get_note_event(elements):
+    return NoteEvent(elements[1], elements[4], '0')
+
+
+def get_chart_output(file_name, events):
+    print('Getting chart output from events')
 
     tempo_lines = []
+    note_lines = []
 
-    for tempo in temp_changes:
-        time = str(int(int(tempo['time']) / 2.5))
-        percentage = 600000.0 / int(tempo['speed'])
-        speed = str(int(percentage * 1000))  # 100000
-        line = time + ' = B ' + speed + '\n'
-        tempo_lines.append(line)
+    for tempo_event in events.tempo_events:
+        tempo_lines.append(tempo_event.get_chart_line())
 
-    track_names = [
-        'ExpertSingle',
-        'ExpertDoubleGuitar',
-        'ExpertDoubleBass',
-        'ExpertDoubleRhythm',
-        'ExpertKeyboard',
-        'HardSingle',
-        'HardDoubleGuitar',
-        'HardDoubleBass',
-        'HardDoubleRhythm',
-        'HardKeyboard',
-        'MediumSingle',
-        'MediumDoubleGuitar',
-        'MediumDoubleBass',
-        'MediumDoubleRhythm',
-        'MediumKeyboard'
-    ]
+    for note_event in events.note_events:
+        note_lines.append(note_event.get_chart_line())
 
-    tracks = {
-        'ExpertSingle': [],
-        'ExpertDoubleGuitar': [],
-        'ExpertDoubleBass': [],
-        'ExpertDoubleRhythm': [],
-        'ExpertKeyboard': [],
-        'HardSingle': [],
-        'HardDoubleGuitar': [],
-        'HardDoubleBass': [],
-        'HardDoubleRhythm': [],
-        'HardKeyboard': [],
-        'MediumSingle': [],
-        'MediumDoubleGuitar': [],
-        'MediumDoubleBass': [],
-        'MediumDoubleRhythm': [],
-        'MediumKeyboard': []
-    }
-
-    for note in notes:
-        button = note_to_button(note['note'])
-        time = str(int(int(note['time']) / 2.5))
-
-        line = time + ' = N ' + button + ' 0\n'
-        track_name = track_names[0]
-        tracks[track_name].append(line)
-
-    with open('output.chart', 'w') as f:
-        f.write(a)
-        f.writelines(tempo_lines)
-        f.write(b)
-
-        for track_name in tracks:
-            f.write('[' + track_name + ']\n{\n')
-            f.writelines(tracks[track_name])
-            f.write('}\n')
+    return CHARTER.get_output(file_name, tempo_lines, note_lines)
 
 
-def note_to_button(note):
-    if note == '38':
-        # Snare
-        return '0'
-    elif note == '36':
-        # Bass Drum
-        return '7'
-    elif note == '42':
-        # Closed Hi-Hat
-        return '1'
-    elif note == '51':
-        # Ride Cymbal
-        return '2'
-    else:
-        return '4'
+def write_output_to_file(song_name, output):
+    print('Writing chart output to file')
+
+    with open(song_name + '.chart', 'w') as f:
+        f.write(output)
 
 
 if __name__ == '__main__':
