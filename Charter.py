@@ -1,11 +1,29 @@
 class Charter:
-    def get_output(self, name, tempo_lines, note_lines):
+    TRACK_NAMES = [
+        'ExpertSingle',
+        'ExpertDoubleGuitar',
+        'ExpertDoubleBass',
+        'ExpertDoubleRhythm',
+        'ExpertKeyboard',
+        'HardSingle',
+        'HardDoubleGuitar',
+        'HardDoubleBass',
+        'HardDoubleRhythm',
+        'HardKeyboard',
+        'MediumSingle',
+        'MediumDoubleGuitar',
+        'MediumDoubleBass',
+        'MediumDoubleRhythm',
+        'MediumKeyboard'
+    ]
+
+    def get_output(self, name, events):
         output = ''
 
         output += self.get_song_output(name) + '\n'
-        output += self.get_sync_track_output(tempo_lines) + '\n'
+        output += self.get_sync_track_output(events.tempo_events) + '\n'
         output += self.get_events_output() + '\n'
-        output += self.get_tracks_output(note_lines) + '\n'
+        output += self.get_tracks_output(self.TRACK_NAMES, events.note_events) + '\n'
 
         return output
 
@@ -32,15 +50,15 @@ class Charter:
 
 
     @staticmethod
-    def get_sync_track_output(tempo_lines):
+    def get_sync_track_output(tempo_events):
         sync_track = ''
 
         sync_track += '[SyncTrack]\n'
         sync_track += '{\n'
         sync_track += '0 = TS 4\n' # We assume time signature is 4/4
 
-        for tempo_line in tempo_lines:
-            sync_track += tempo_line + '\n'
+        for tempo_event in tempo_events:
+            sync_track += tempo_event.get_chart_line() + '\n'
 
         sync_track += '}'
 
@@ -59,14 +77,14 @@ class Charter:
 
 
     @staticmethod
-    def get_tracks_output(note_lines):
+    def get_tracks_output(track_names, note_events):
         tracks = ''
 
         tracks += '[ExpertSingle]\n'
         tracks += '{\n'
 
-        for note_line in note_lines:
-            tracks += note_line + '\n'
+        for note_event in note_events:
+            tracks += note_event.get_chart_line() + '\n'
 
         tracks += '}'
 

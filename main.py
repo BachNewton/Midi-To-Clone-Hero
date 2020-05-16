@@ -15,7 +15,7 @@ def main():
         if file_name.endswith('.mid'):
             events = get_events(file_name)
             song_name = get_song_name(file_name)
-            output = get_chart_output(song_name, events)
+            output = CHARTER.get_output(song_name, events)
             write_output_to_file(song_name, output)
 
 
@@ -50,22 +50,7 @@ def get_tempo_event(elements):
 
 
 def get_note_event(elements):
-    return NoteEvent(elements[1], elements[4], '0')
-
-
-def get_chart_output(file_name, events):
-    print('Getting chart output from events')
-
-    tempo_lines = []
-    note_lines = []
-
-    for tempo_event in events.tempo_events:
-        tempo_lines.append(tempo_event.get_chart_line())
-
-    for note_event in events.note_events:
-        note_lines.append(note_event.get_chart_line())
-
-    return CHARTER.get_output(file_name, tempo_lines, note_lines)
+    return NoteEvent(elements[1], elements[4], '0', elements[0])
 
 
 def write_output_to_file(song_name, output):
