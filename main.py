@@ -30,6 +30,7 @@ def get_events(file_name):
 
     notes_events = []
     tempo_events = []
+    time_scale = 1
 
     for midi_line in midi_lines:
         elements = midi_line.split(', ')
@@ -37,12 +38,14 @@ def get_events(file_name):
 
         element_type = elements[2]
 
-        if element_type == 'Tempo':
+        if element_type == 'Header':
+            time_scale = get_time_scale(elements)
+        elif element_type == 'Tempo':
             tempo_events.append(get_tempo_event(elements))
         elif element_type == 'Note_on_c' and elements[5] != '0': # Only note 'ON' events
              notes_events.append(get_note_event(elements))
 
-    return Events(tempo_events, notes_events)
+    return Events(tempo_events, notes_events, time_scale)
 
 
 def get_tempo_event(elements):
@@ -51,6 +54,10 @@ def get_tempo_event(elements):
 
 def get_note_event(elements):
     return NoteEvent(elements[1], elements[4], '0', elements[0])
+
+
+def get_time_scale(elements):
+    return int(elements[5]) / 192
 
 
 def write_output_to_file(song_name, output):
