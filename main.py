@@ -1,5 +1,6 @@
 import py_midicsv
 import os
+from midi2audio import FluidSynth
 from scripts.TempoEvent import TempoEvent
 from scripts.NoteEvent import NoteEvent
 from scripts.Events import Events
@@ -33,6 +34,8 @@ def get_events(input_folder, file_name):
     print('Getting events from midi file:\n\t', file_name)
 
     midi_lines = py_midicsv.midi_to_csv(input_folder + file_name)
+    # fs = FluidSynth('sound_font.sf2')
+    # fs.play_midi('C:\\Users\\Kyle\\hobby\\Midi-To-Clone-Hero\\input\\Furloughed_#1.mid')
 
     notes_events = []
     tempo_events = []
