@@ -95,7 +95,10 @@ def create_audio_from_midi(mid_file_path, output_folder):
     file_name = output_folder + 'song.wav'
     print('Creating audio file from midi:\n\t', file_name)
 
-    FLUID_SYNTHESIZER.midi_to_audio(mid_file_path, file_name)
+    try:
+        FLUID_SYNTHESIZER.midi_to_audio(mid_file_path, file_name)
+    except FileNotFoundError:
+        print('ERROR:\n\tThere was a problem converting midi to audio.\n\tYou must have FluidSynth installed.')
 
 
 if __name__ == '__main__':
