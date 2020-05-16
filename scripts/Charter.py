@@ -32,7 +32,6 @@ class Charter:
 
         return output
 
-
     @staticmethod
     def get_song_output(name):
         header = ''
@@ -53,14 +52,13 @@ class Charter:
 
         return header
 
-
     @staticmethod
     def get_sync_track_output(tempo_events, time_scale):
         sync_track = ''
 
         sync_track += '[SyncTrack]\n'
         sync_track += '{\n'
-        sync_track += '0 = TS 4\n' # We assume time signature is 4/4
+        sync_track += '0 = TS 4\n'  # We assume time signature is 4/4
 
         for tempo_event in tempo_events:
             sync_track += tempo_event.get_chart_line(time_scale) + '\n'
@@ -68,7 +66,6 @@ class Charter:
         sync_track += '}'
 
         return sync_track
-
 
     @staticmethod
     def get_events_output():
@@ -79,7 +76,6 @@ class Charter:
         events += '}'
 
         return events
-
 
     @staticmethod
     def get_tracks_output(track_names, note_events, time_scale):
@@ -96,7 +92,7 @@ class Charter:
             channels[channel].append(note_event)
 
         for channel in channels:
-            if channel < len(track_names): # We have to skip some channels if we've run out of tracks
+            if channel < len(track_names):  # We have to skip some channels if we've run out of tracks
                 tracks += '[' + track_names[channel] + ']\n'
                 tracks += '{\n'
 
