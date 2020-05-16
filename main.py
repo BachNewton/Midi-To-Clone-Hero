@@ -10,7 +10,7 @@ CHARTER = Charter()
 
 def main():
     input_folder = 'input/'
-    print('Finding midi files inside:', input_folder)
+    print('Finding midi files inside:\n\t', input_folder)
 
     for file_name in os.listdir(input_folder):
         if file_name.endswith('.mid'):
@@ -25,7 +25,7 @@ def get_song_name(file_name):
 
 
 def get_events(input_folder, file_name):
-    print('Getting events from midi file:', file_name)
+    print('Getting events from midi file:\n\t', file_name)
 
     midi_lines = py_midicsv.midi_to_csv(input_folder + file_name)
 
@@ -62,10 +62,20 @@ def get_time_scale(elements):
 
 
 def write_output_to_file(song_name, output):
-    file_name = 'output/' + song_name + '.chart'
-    print('Writing chart output to file:', file_name)
+    output_folder = 'output/'
 
-    with open(file_name, 'w') as f:
+    if not os.path.exists(output_folder):
+        os.mkdir(output_folder)
+
+    folder_name = song_name + '/'
+
+    if not os.path.exists(output_folder + folder_name):
+        os.mkdir(output_folder + folder_name)
+
+    path = output_folder + folder_name + 'notes.chart'
+    print('Writing chart output to file:\n\t', path)
+
+    with open(path, 'w') as f:
         f.write(output)
 
 
