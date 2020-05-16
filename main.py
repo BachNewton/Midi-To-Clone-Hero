@@ -9,6 +9,11 @@ CHARTER = Charter()
 
 
 def main():
+    print('|-----------------------------|')
+    print('|     Midi to Clone Hero      |')
+    print('| Created by: Kyle Hutchinson |')
+    print('|-----------------------------|\n')
+
     input_folder = 'input/'
     print('Finding midi files inside:\n\t', input_folder)
 
