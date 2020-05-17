@@ -1,30 +1,40 @@
 import py_midicsv
 import os
-from midi2audio import FluidSynth
+import time
 from scripts.TempoEvent import TempoEvent
 from scripts.NoteEvent import NoteEvent
 from scripts.Events import Events
 from scripts.Charter import Charter
 
 CHARTER = Charter()
-FLUID_SYNTHESIZER = FluidSynth('SoundFonts/sound_font.sf2')
 
 
 def main():
-    print('|-----------------------------|')
-    print('|     Midi to Clone Hero      |')
-    print('| Created by: Kyle Hutchinson |')
-    print('|-----------------------------|\n')
+    print('|---------------------------------------------|')
+    print('|                                             |')
+    print('|             Midi to Clone Hero              |')
+    print('|         Created by: Kyle Hutchinson         |')
+    print('|                                             |')
+    print('|---------------------------------------------|')
 
     input_folder = 'input/'
-    print('Finding midi files inside:\n\t', input_folder)
+    print('\nFinding midi files inside:\n\t', input_folder)
 
     for file_name in os.listdir(input_folder):
         if file_name.endswith('.mid'):
-            events = get_events(input_folder, file_name)
-            song_name = get_song_name(file_name)
-            output = CHARTER.get_output(song_name, events)
-            create_output(input_folder + file_name, song_name, output)
+            convert_file(input_folder, file_name)
+
+
+def convert_file(input_folder, file_name):
+    start_time = time.time()
+    print('\n-----------------------------------------------')
+    events = get_events(input_folder, file_name)
+    song_name = get_song_name(file_name)
+    output = CHARTER.get_output(song_name, events)
+    create_output(input_folder + file_name, song_name, output)
+    total_time = str(time.time() - start_time)
+    print('\nConverted in: ' + total_time + ' seconds')
+    print('-----------------------------------------------\n')
 
 
 def get_song_name(file_name):
@@ -92,15 +102,23 @@ def write_output_to_file(output_folder, output):
 
 
 def create_audio_from_midi(mid_file_path, output_folder):
-    file_name = output_folder + 'song.wav'
-    print('Creating audio file from midi:\n\t', file_name)
+    song_file_name = output_folder + 'song.wav'
+    print('Creating audio file from midi:\n\t', song_file_name)
 
-    try:
-        FLUID_SYNTHESIZER.midi_to_audio(mid_file_path, file_name)
-    except FileNotFoundError:
-        print('ERROR:\n\tThere was a problem converting midi to audio.\n\tYou must have FluidSynth installed.')
-        # muse_score_path = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
-        # os.system(muse_score_path + ' -o "' + file_name + '" "' + mid_file_path + '"')
+    muse_score_path = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
+    muse_score_file_name = output_folder + 'song.mscz'
+
+    first_command = muse_score_path + ' -o "' + muse_score_file_name + '" "' + mid_file_path + '"'
+    second_command = muse_score_path + ' -o "' + song_file_name + '" "' + muse_score_file_name + '"'
+
+    # Converting temporary .mscz file
+    os.system(first_command)
+
+    # Converting the temporary .mscz file into a .wav file
+    os.system(second_command)
+
+    # Removing the temporary .mscz file
+    os.remove(muse_score_file_name)
 
 
 if __name__ == '__main__':
