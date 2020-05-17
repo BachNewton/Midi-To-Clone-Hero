@@ -22,6 +22,8 @@ class Charter:
         'EasyKeyboard'
     ]
 
+    BUTTONS = 5
+
     def get_output(self, name, events):
         output = ''
 
@@ -77,8 +79,7 @@ class Charter:
 
         return events
 
-    @staticmethod
-    def get_tracks_output(track_names, note_events, time_scale):
+    def get_tracks_output(self, track_names, note_events, time_scale):
         tracks = ''
 
         channels = {}
@@ -94,12 +95,54 @@ class Charter:
 
         for channel in channels:
             if channel < len(track_names):  # We have to skip some channels if we've run out of tracks
-                tracks += '[' + track_names[channel] + ']\n'
-                tracks += '{\n'
-
-                for note_event in channels[channel]:
-                    tracks += note_event.get_chart_line(time_scale, 0) + '\n'  # Note duration will be added later
-
-                tracks += '}\n'
+                track = self.get_track(track_names[channel], channels[channel], time_scale)
+                tracks += track + '\n'
 
         return tracks
+
+    def get_track(self, track_name, note_events, time_scale):
+        track = ''
+
+        track += '[' + track_name + ']\n'
+        track += '{\n'
+
+        last_pitch = 60  # Start on 'Middle C'
+        last_button = 3  # Start on 'Yellow' button
+
+        for note_event in note_events:
+            button = self.get_button(note_event.pitch, last_pitch, last_button)
+            line = note_event.get_chart_line(time_scale, button, 0)  # Note duration will be added later
+            track += line + '\n'
+
+            last_pitch = note_event.pitch
+            last_button = button
+
+        track += '}'
+
+        return track
+
+    def get_button(self, pitch, last_pitch, last_button):
+        diff = pitch - last_pitch
+        direction = 1 if diff > 0 else -1
+
+        # Minor Second / Major Second
+        if abs(diff) in [1, 2]:
+            last_button += direction * 1
+            button = last_button % self.BUTTONS
+        # Minor Third / Major Third / Perfect Forth
+        elif abs(diff) in [3, 4, 5]:
+            last_button += direction * 2
+            button = last_button % self.BUTTONS
+        # Tritone / Perfect Fifth / Minor Sixth / Major Sixth
+        elif abs(diff) in [6, 7, 8, 9]:
+            last_button += direction * 3
+            button = last_button % self.BUTTONS
+        # Minor Seventh / Major Seventh / Octave
+        elif abs(diff) in [10, 11, 12]:
+            last_button += direction * 4
+            button = last_button % self.BUTTONS
+        # Perfect Unison
+        else:
+            button = last_button
+
+        return button
