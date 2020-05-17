@@ -60,7 +60,7 @@ def get_events(input_folder, file_name):
             time_scale = get_time_scale(elements)
         elif element_type == 'Tempo':
             tempo_events.append(get_tempo_event(elements))
-        elif element_type == 'Note_on_c' and elements[5] != '0':  # Only note 'ON' events
+        elif element_type == 'Note_on_c':
             notes_events.append(get_note_event(elements))
 
     return Events(tempo_events, notes_events, time_scale)
@@ -71,7 +71,7 @@ def get_tempo_event(elements):
 
 
 def get_note_event(elements):
-    return NoteEvent(elements[1], elements[4], '0', elements[0])
+    return NoteEvent(elements[1], elements[4], elements[5], elements[0])
 
 
 def get_time_scale(elements):

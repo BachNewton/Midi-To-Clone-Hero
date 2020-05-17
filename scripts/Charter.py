@@ -84,12 +84,13 @@ class Charter:
         channels = {}
 
         for note_event in note_events:
-            channel = note_event.channel
+            if note_event.isOnEvent:
+                channel = note_event.channel
 
-            if channel not in channels:
-                channels[channel] = []
+                if channel not in channels:
+                    channels[channel] = []
 
-            channels[channel].append(note_event)
+                channels[channel].append(note_event)
 
         for channel in channels:
             if channel < len(track_names):  # We have to skip some channels if we've run out of tracks
@@ -97,7 +98,7 @@ class Charter:
                 tracks += '{\n'
 
                 for note_event in channels[channel]:
-                    tracks += note_event.get_chart_line(time_scale) + '\n'
+                    tracks += note_event.get_chart_line(time_scale, 0) + '\n'  # Note duration will be added later
 
                 tracks += '}\n'
 
