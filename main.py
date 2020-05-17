@@ -20,9 +20,19 @@ def main():
     input_folder = 'input/'
     print('\nFinding midi files inside:\n\t', input_folder)
 
-    for file_name in os.listdir(input_folder):
-        if file_name.endswith('.mid'):
-            convert_file(input_folder, file_name)
+    midi_files = [file_name for file_name in os.listdir(input_folder) if file_name.endswith('.mid')]
+    convert_files(midi_files, input_folder)
+
+
+def convert_files(midi_files, input_folder):
+    start_time = time.time()
+    print('Found:\n\t', midi_files)
+
+    for midi_file in midi_files:
+        convert_file(input_folder, midi_file)
+
+    total_time = str(round(time.time() - start_time, 2))
+    print('Conversions completed in: ' + total_time + ' seconds')
 
 
 def convert_file(input_folder, file_name):
@@ -32,7 +42,7 @@ def convert_file(input_folder, file_name):
     song_name = get_song_name(file_name)
     output = CHARTER.get_output(song_name, events)
     create_output(input_folder + file_name, song_name, output)
-    total_time = str(time.time() - start_time)
+    total_time = str(round(time.time() - start_time, 2))
     print('\nConverted in: ' + total_time + ' seconds')
     print('-----------------------------------------------\n')
 
