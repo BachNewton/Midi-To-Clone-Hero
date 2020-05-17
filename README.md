@@ -1,9 +1,9 @@
 # Midi To Clone Hero
 
 ### Requirements
-- Python 3.6
-- pip py-midicsv
-- pip midi2audio
+- [Python 3](https://www.python.org/)
+- [pip py-midicsv](https://pypi.org/project/py-midicsv/)
+- [MuseScore](https://musescore.org/)
 
 ### How to Use
 1. Put midi files into the "input" folder
