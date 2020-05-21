@@ -100,7 +100,7 @@ class Charter:
 
         ordered_channels.sort(key=len, reverse=True)
 
-        for i in range(len(track_names)):
+        for i in range(min(len(track_names), len(ordered_channels))):
             track = self.get_track(track_names[i], ordered_channels[i], time_scale)
             tracks += track + '\n'
 
