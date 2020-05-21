@@ -1,4 +1,5 @@
 import os
+import subprocess
 import time
 from scripts.Events import Events
 from scripts.Charter import Charter
@@ -71,20 +72,40 @@ def create_audio_from_midi(mid_file_path, output_folder):
     song_file_name = output_folder + 'song.wav'
     print('Creating audio file from midi:\n\t', song_file_name)
 
-    muse_score_path = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
-    muse_score_file_name = output_folder + 'song.mscz'
+    muse_score_path_windows = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
+    muse_score_path_mac = '/Applications/MuseScore 3.app/Contents/MacOS/mscore'
 
-    first_command = muse_score_path + ' -o "' + muse_score_file_name + '" "' + mid_file_path + '"'
-    second_command = muse_score_path + ' -o "' + song_file_name + '" "' + muse_score_file_name + '"'
+    if os.path.exists(muse_score_path_windows):
+        muse_score_path = muse_score_path_windows
+    elif os.path.exists(muse_score_path_mac):
+        muse_score_path = muse_score_path_mac
+    else:
+        muse_score_path = ''
 
-    # Converting temporary .mscz file
-    os.system(first_command)
+    if muse_score_path:
+        muse_score_file_name = output_folder + 'song.mscz'
 
-    # Converting the temporary .mscz file into a .wav file
-    os.system(second_command)
+        # Converting temporary .mscz file
+        subprocess.run(
+            [muse_score_path, '-o', muse_score_file_name, mid_file_path],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
-    # Removing the temporary .mscz file
-    os.remove(muse_score_file_name)
+        # Converting the temporary .mscz file into a .wav file
+        subprocess.run(
+            [muse_score_path, '-o', song_file_name, muse_score_file_name],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+
+        # Removing the temporary .mscz file
+        os.remove(muse_score_file_name)
+    else:
+        print('\nERROR - Could not find MuseScore install')
+        print('\tOn Windows:\n\t\t', muse_score_path_windows)
+        print('\tOn Mac:\n\t\t', muse_score_path_mac)
+        print('\tThis file will be skipped. Please create "song.wav" manually.')
 
 
 if __name__ == '__main__':

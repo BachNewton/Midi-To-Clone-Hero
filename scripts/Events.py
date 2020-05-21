@@ -2,6 +2,7 @@ import py_midicsv
 from scripts.TempoEvent import TempoEvent
 from scripts.NoteEvent import NoteEvent
 
+
 class Events:
     TIME_SCALE_BASE = 192
 
@@ -26,7 +27,6 @@ class Events:
                 tempo_events.append(self.get_tempo_event(elements))
             elif element_type == 'Note_on_c':
                 note_events.append(self.get_note_event(elements))
-
 
         self.tempo_events = tempo_events
         self.note_events = note_events
