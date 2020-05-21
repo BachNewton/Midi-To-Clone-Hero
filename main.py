@@ -88,6 +88,7 @@ def create_audio_from_midi(mid_file_path, output_folder):
         muse_score_file_name = output_folder + 'temp_file.mscz'
 
         # Converting temporary .mscz file
+        print('\t\tStep (1/3): Create temporary ".mscz" file')
         subprocess.run(
             [muse_score_path, '-o', muse_score_file_name, mid_file_path],
             stdout=subprocess.DEVNULL,
@@ -95,6 +96,7 @@ def create_audio_from_midi(mid_file_path, output_folder):
         )
 
         # Converting the temporary .mscz file into a .wav file
+        print('\t\tStep (2/3): Convert ".mscz" file into a ".wav" file')
         subprocess.run(
             [muse_score_path, '-o', song_file_name, muse_score_file_name],
             stdout=subprocess.DEVNULL,
@@ -102,6 +104,7 @@ def create_audio_from_midi(mid_file_path, output_folder):
         )
 
         # Removing the temporary .mscz file
+        print('\t\tStep (3/3): Delete temporary ".mscz" file')
         os.remove(muse_score_file_name)
     else:
         print('\nERROR - Could not find MuseScore install')
