@@ -107,7 +107,7 @@ class Charter:
         track += '{\n'
 
         last_pitch = 60  # Start on 'Middle C'
-        last_button = 3  # Start on 'Yellow' button
+        last_button = 2  # Start on 'Yellow' button
 
         for note_event in note_events:
             button = self.get_button(note_event.pitch, last_pitch, last_button)
