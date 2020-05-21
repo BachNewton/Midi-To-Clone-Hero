@@ -93,10 +93,16 @@ class Charter:
 
                 channels[channel].append(note_event)
 
+        ordered_channels = []
+
         for channel in channels:
-            if channel < len(track_names):  # We have to skip some channels if we've run out of tracks
-                track = self.get_track(track_names[channel], channels[channel], time_scale)
-                tracks += track + '\n'
+            ordered_channels.append(channels[channel])
+
+        ordered_channels.sort(key=len, reverse=True)
+
+        for i in range(len(track_names)):
+            track = self.get_track(track_names[i], ordered_channels[i], time_scale)
+            tracks += track + '\n'
 
         return tracks
 

@@ -5,6 +5,8 @@ from scripts.Events import Events
 from scripts.Charter import Charter
 
 CHARTER = Charter()
+MUSE_SCORE_PATH_WINDOWS = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
+MUSE_SCORE_PATH_MAC = '/Applications/MuseScore 3.app/Contents/MacOS/mscore'
 
 
 def main():
@@ -24,7 +26,10 @@ def main():
 
 def convert_files(midi_files, input_folder):
     start_time = time.time()
-    print('Found:\n\t', midi_files)
+
+    print('Found:')
+    for midi_file in midi_files:
+        print('\t', midi_file)
 
     for midi_file in midi_files:
         convert_file(input_folder, midi_file)
@@ -72,18 +77,15 @@ def create_audio_from_midi(mid_file_path, output_folder):
     song_file_name = output_folder + 'song.wav'
     print('Creating audio file from midi:\n\t', song_file_name)
 
-    muse_score_path_windows = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
-    muse_score_path_mac = '/Applications/MuseScore 3.app/Contents/MacOS/mscore'
-
-    if os.path.exists(muse_score_path_windows):
-        muse_score_path = muse_score_path_windows
-    elif os.path.exists(muse_score_path_mac):
-        muse_score_path = muse_score_path_mac
+    if os.path.exists(MUSE_SCORE_PATH_WINDOWS):
+        muse_score_path = MUSE_SCORE_PATH_WINDOWS
+    elif os.path.exists(MUSE_SCORE_PATH_MAC):
+        muse_score_path = MUSE_SCORE_PATH_MAC
     else:
         muse_score_path = ''
 
     if muse_score_path:
-        muse_score_file_name = output_folder + 'song.mscz'
+        muse_score_file_name = output_folder + 'temp_file.mscz'
 
         # Converting temporary .mscz file
         subprocess.run(
@@ -103,8 +105,8 @@ def create_audio_from_midi(mid_file_path, output_folder):
         os.remove(muse_score_file_name)
     else:
         print('\nERROR - Could not find MuseScore install')
-        print('\tOn Windows:\n\t\t', muse_score_path_windows)
-        print('\tOn Mac:\n\t\t', muse_score_path_mac)
+        print('\tOn Windows:\n\t\t', MUSE_SCORE_PATH_WINDOWS)
+        print('\tOn Mac:\n\t\t', MUSE_SCORE_PATH_MAC)
         print('\tThis file will be skipped. Please create "song.wav" manually.')
 
 
