@@ -124,21 +124,23 @@ class Charter:
     def get_button(self, pitch, last_pitch, last_button):
         diff = pitch - last_pitch
         direction = 1 if diff > 0 else -1
+        diff = abs(diff)
+        diff %= 13  # If we pass an octave, loop around
 
         # Minor Second / Major Second
-        if abs(diff) in [1, 2]:
+        if diff in [1, 2]:
             last_button += direction * 1
             button = last_button % self.BUTTONS
         # Minor Third / Major Third / Perfect Forth
-        elif abs(diff) in [3, 4, 5]:
+        elif diff in [3, 4, 5]:
             last_button += direction * 2
             button = last_button % self.BUTTONS
         # Tritone / Perfect Fifth / Minor Sixth / Major Sixth
-        elif abs(diff) in [6, 7, 8, 9]:
+        elif diff in [6, 7, 8, 9]:
             last_button += direction * 3
             button = last_button % self.BUTTONS
         # Minor Seventh / Major Seventh / Octave
-        elif abs(diff) in [10, 11, 12]:
+        elif diff in [10, 11, 12]:
             last_button += direction * 4
             button = last_button % self.BUTTONS
         # Perfect Unison
