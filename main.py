@@ -5,7 +5,7 @@ from scripts.Events import Events
 from scripts.Charter import Charter
 
 CHARTER = Charter()
-MUSE_SCORE_PATH_WINDOWS = 'C:\\"Program Files (x86)"\\"MuseScore 3"\\bin\\MuseScore3'
+MUSE_SCORE_PATH_WINDOWS = 'C:/Program Files (x86)/MuseScore 3/bin/{}'
 MUSE_SCORE_PATH_MAC = '/Applications/MuseScore 3.app/Contents/MacOS/mscore'
 
 
@@ -77,8 +77,8 @@ def create_audio_from_midi(mid_file_path, output_folder):
     song_file_name = output_folder + 'song.wav'
     print('Creating audio file from midi:\n\t', song_file_name)
 
-    if os.path.exists(MUSE_SCORE_PATH_WINDOWS):
-        muse_score_path = MUSE_SCORE_PATH_WINDOWS
+    if os.path.exists(MUSE_SCORE_PATH_WINDOWS.format('')):
+        muse_score_path = MUSE_SCORE_PATH_WINDOWS.format('MuseScore3')
     elif os.path.exists(MUSE_SCORE_PATH_MAC):
         muse_score_path = MUSE_SCORE_PATH_MAC
     else:
