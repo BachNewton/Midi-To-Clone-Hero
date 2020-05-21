@@ -1,24 +1,24 @@
 class Charter:
     TRACK_NAMES = [
         'ExpertSingle',
-        'ExpertDoubleGuitar',
         'ExpertDoubleBass',
         'ExpertDoubleRhythm',
+        'ExpertDoubleGuitar',
         'ExpertKeyboard',
         'HardSingle',
-        'HardDoubleGuitar',
         'HardDoubleBass',
         'HardDoubleRhythm',
+        'HardDoubleGuitar',
         'HardKeyboard',
         'MediumSingle',
-        'MediumDoubleGuitar',
         'MediumDoubleBass',
         'MediumDoubleRhythm',
+        'MediumDoubleGuitar',
         'MediumKeyboard',
         'EasySingle',
-        'EasyDoubleGuitar',
         'EasyDoubleBass',
         'EasyDoubleRhythm',
+        'EasyDoubleGuitar',
         'EasyKeyboard'
     ]
 
