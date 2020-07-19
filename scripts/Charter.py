@@ -85,7 +85,7 @@ class Charter:
         channels = {}
 
         for note_event in note_events:
-            if note_event.isOnEvent:
+            if note_event.isOnEvent and not note_event.isDrumNote:
                 channel = note_event.channel
 
                 if channel not in channels:

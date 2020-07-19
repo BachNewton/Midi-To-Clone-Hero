@@ -38,7 +38,7 @@ class Events:
 
     @staticmethod
     def get_note_event(elements):
-        return NoteEvent(elements[1], elements[4], elements[5], elements[0])
+        return NoteEvent(elements[1], elements[4], elements[5], elements[3])
 
     def get_time_scale(self, elements):
         return int(elements[5]) / self.TIME_SCALE_BASE

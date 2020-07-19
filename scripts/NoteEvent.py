@@ -4,6 +4,7 @@ class NoteEvent:
         self.pitch = int(pitch)
         self.isOnEvent = velocity != '0'
         self.channel = channel
+        self.isDrumNote = channel == '9'
 
     def get_chart_line(self, time_scale, button, duration):
         time = int(self.time / time_scale)

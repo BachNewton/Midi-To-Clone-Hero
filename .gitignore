@@ -1,3 +1,5 @@
 .idea
 output
+input
 scripts/__pycache__
+venv
