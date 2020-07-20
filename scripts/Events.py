@@ -4,7 +4,7 @@ from scripts.NoteEvent import NoteEvent
 
 
 class Events:
-    TIME_SCALE_BASE = 192
+    TIME_SCALE_BASE = 192  # TODO: Look into .chart meta property "Resolution"
 
     def __init__(self, input_folder, file_name):
         print('Getting events from midi file:\n\t', file_name)
@@ -38,7 +38,13 @@ class Events:
 
     @staticmethod
     def get_note_event(elements):
-        return NoteEvent(elements[1], elements[4], elements[5], elements[3])
+        return NoteEvent(
+            track=elements[0],
+            time=elements[1],
+            channel=elements[3],
+            pitch=elements[4],
+            velocity=elements[5]
+        )
 
     def get_time_scale(self, elements):
         return int(elements[5]) / self.TIME_SCALE_BASE

@@ -82,29 +82,38 @@ class Charter:
     def get_tracks_output(self, track_names, note_events, time_scale):
         tracks = ''
 
-        channels = {}
+        midi_tracks = {}
+        drum_notes = []
 
         for note_event in note_events:
-            if note_event.isOnEvent and not note_event.isDrumNote:
-                channel = note_event.channel
+            if note_event.isOnEvent:
+                if note_event.isDrumNote:
+                    drum_notes.append(note_event)
+                else:
+                    midi_track = note_event.track
 
-                if channel not in channels:
-                    channels[channel] = []
+                    if midi_track not in midi_tracks:
+                        midi_tracks[midi_track] = []
 
-                channels[channel].append(note_event)
+                    midi_tracks[midi_track].append(note_event)
 
-        ordered_channels = []
+        ordered_midi_tracks = []
 
-        for channel in channels:
-            ordered_channels.append(channels[channel])
+        for midi_track in midi_tracks:
+            ordered_midi_tracks.append(midi_tracks[midi_track])
 
-        ordered_channels.sort(key=len, reverse=True)
+        ordered_midi_tracks.sort(key=len, reverse=True)
 
-        for i in range(min(len(track_names), len(ordered_channels))):
-            track = self.get_track(track_names[i], ordered_channels[i], time_scale)
+        for i in range(min(len(track_names), len(ordered_midi_tracks))):
+            track = self.get_track(track_names[i], ordered_midi_tracks[i], time_scale)
             tracks += track + '\n'
 
+        # tracks += 'temp drum part' + '\n'
+
         return tracks
+
+    def get_drum_track(self, note_events):
+        temp = 1
 
     def get_track(self, track_name, note_events, time_scale):
         track = ''
