@@ -108,12 +108,42 @@ class Charter:
             track = self.get_track(track_names[i], ordered_midi_tracks[i], time_scale)
             tracks += track + '\n'
 
-        # tracks += 'temp drum part' + '\n'
+        # TODO: Add drum support when this is complete: https://strikeline.myjetbrains.com/youtrack/issue/CH-58
+        # tracks += self.get_drum_track(drum_notes, time_scale) + '\n'
 
         return tracks
 
-    def get_drum_track(self, note_events):
-        temp = 1
+    def get_drum_track(self, note_events, time_scale):
+        track = ''
+
+        track += '[ExpertDrums]\n'
+        track += '{\n'
+
+        for note_event in note_events:
+            button = self.get_drum_button(note_event.pitch)
+            if button is not None:
+                line = note_event.get_chart_line(time_scale, button, 0)  # Drum notes never have a duration
+                track += line + '\n'
+
+        track += '}'
+
+        return track
+
+    @staticmethod
+    def get_drum_button(pitch):
+        if pitch in [35, 36]:  # Acoustic Bass Drum, Electric Bass Drum
+            button = 0  # Open / Kick
+        elif pitch in [38, 40]:  # Acoustic Snare, Electric Snare
+            button = 1  # Lane 1 / Red Tom
+        elif pitch == 42:  # Closed Hi-hat
+            button = 66  # Pro Drums Cymbal Lane 2 / Yellow Cymbal
+        elif pitch == 51:  # Ride Cymbal 1
+            button = 67  # Pro Drums Cymbal Lane 3 / Blue Cymbal
+        else:
+            print('Warning! - Unknown drum pitch:', pitch, '- Skipping this note')
+            button = None
+
+        return button
 
     def get_track(self, track_name, note_events, time_scale):
         track = ''
@@ -126,7 +156,7 @@ class Charter:
 
         for note_event in note_events:
             button = self.get_button(note_event.pitch, last_pitch, last_button)
-            line = note_event.get_chart_line(time_scale, button, 0)  # Note duration will be added later
+            line = note_event.get_chart_line(time_scale, button, 0)  # TODO: Add note duration
             track += line + '\n'
 
             last_pitch = note_event.pitch
